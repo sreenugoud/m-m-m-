@@ -1,0 +1,266 @@
+-----------------------------
+Streams---
+  
+  package com.mph.java8;
+
+import java.util.Arrays;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class StreamEg {
+
+	public static void main(String[] args) {
+
+		List<String> strlist = Arrays.asList("rat", "hyna", "", "Tiger", "cheetha", "cat");
+		System.out.println("List of String:" + strlist);
+
+		long count = strlist.stream().filter(str -> str.isEmpty()).count();
+		System.out.println(count);
+
+		List<String> stlist = strlist.stream().filter(str -> !str.isEmpty()).collect(Collectors.toList());
+		System.out.println(stlist);
+
+		long count1 = strlist.stream().filter(str -> str.length() == 3).count();
+		System.out.println(count);
+		System.out.println("Count of Strings with length 3:" + count1);
+
+		List<Integer> intlist = Arrays.asList(1, 3, 65, 2, 45, 69, 74);
+		System.out.println("Max number is " + intlist);
+
+		IntSummaryStatistics stat = intlist.stream().mapToInt(n -> n).summaryStatistics();
+		System.out.println(stat.getMax());
+		System.out.println(stat.getSum());
+		System.out.println(stat.getAverage());
+	}
+
+}
+
+=================================================================================================
+package com.mph.java8;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Java7 {
+
+	public static void main(String[] args) {
+
+		List<String> strlist = Arrays.asList("rat", "hyna", "", "Tiger", "cheetha", "cat");
+		System.out.println("List of String:" + strlist);
+
+		long count = 0;
+		count = getEmptyStringCountFromList(strlist);
+		System.out.println("count of empty String:" + count);
+
+		List<String> strlist1 = deleteEmptyStringNprint(strlist);
+		System.out.println(" Strings without empty String:" + strlist);
+
+		long count1 = getStringWithLength3(strlist);
+		System.out.println("Count of Strings with length 3:" + count1);
+
+		List<Integer> intlist=Arrays.asList(1,3,65,2,45,69,74);
+		System.out.println("Max number is "+ intlist);
+		
+		int maxval= getMaxValue(intlist);
+		System.out.println("Max Class:"+maxval);
+		
+		int sumval =getSumOfValue(intlist);
+		System.out.println("Total Sum ="+sumval	);
+
+	}
+	private static int getSumOfValue(List<Integer> intlist) {
+		int sum=0;
+		for (int num : intlist) { 
+            sum += num; 
+        } 
+		return sum;
+	}
+
+	private static int getMaxValue(List<Integer> intlist) {
+		
+		int max=intlist.get(0); 
+        for (int i = 0; i < intlist.size(); i++) {
+           Integer num=intlist.get(i);
+			if (num.intValue() >max);
+                max=num.intValue();
+        }
+		
+		return max;
+	}
+
+	private static long getStringWithLength3(List<String> strlist) {
+		long count = 0;
+		for (String str : strlist) {
+			if (str.length() == 3) {
+				count++;
+			}
+
+		}
+		return count;
+	}
+
+	private static List<String> deleteEmptyStringNprint(List<String> strlist) {
+		List<String> stlist = new ArrayList<>();
+		for (String str : strlist) {
+			if (!(str.isEmpty())) {
+				stlist.add(str);
+			}
+		}
+		return strlist;
+	}
+
+	private static long getEmptyStringCountFromList(List<String> strlist) {
+		long count = 0;
+		for (String str : strlist) {
+			if (str.isEmpty()) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+}
+============================================================================================================================
+--------Lambda-----------
+  package com.mph.java8;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+public class LamdaEG {
+
+	public static void main(String[] args) {
+		// java-7-1
+		Task ts = new Task();
+		ts.print();
+		// java 7 -way2
+		Mythread mt = new Mythread();
+		Thread t = new Thread(mt);
+		t.start();
+		// java 7 -way2
+		Runnable r = new Runnable() {
+
+			@Override
+			public void run() {
+				Task ts = new Task();
+				ts.print();
+			}
+		};
+		Thread t1 = new Thread(r);
+		t1.start();
+
+		// java -8 way1
+		Runnable r1 = () -> {
+			Task ts1 = new Task();
+			ts1.print();
+		};
+		Thread th2 = new Thread(r1);
+		th2.start();
+		// java 8 -2
+		Thread th3 = new Thread(() -> {
+			Task ts1 = new Task();
+			ts1.print();
+		});
+		th3.start();
+		// java 8-3;
+		new Thread(() -> {
+			Task ts1 = new Task();
+			ts1.print();
+		}).start();
+
+		// java 8 -4 way
+		new Thread(() -> {
+			new Task().print();
+		}).start();
+
+		// java 8-way 5 -- Method references
+
+		new Thread(new Task()::print).start();
+
+		User u1 = new User(11, "kranthi", "kranthi@gmail.com");
+		User u2 = new User(12, "panum", "Panum@gmail.com");
+		User u3 = new User(13, "raja", "raja@gmail.com");
+		User u4 = new User(14, "Rohit", "Rohit@gmail.com");
+
+		List<User> ulist = new ArrayList<>();
+		ulist.add(u1);
+		ulist.add(u2);
+		ulist.add(u3);
+		ulist.add(u4);
+		System.out.println(ulist);
+
+//		Iterator<User> ui=ulist.iterator();
+//		while(ui.hasNext()) {
+//			System.out.println(ui.next());
+//		}
+
+		ulist.forEach((li) -> System.out.println(li));
+
+		
+		BiPredicate<String, String> va = (un, pw) -> {
+			return un.equals(pw);
+		};
+		
+
+		boolean b = va.test("Pavan", "Pwd123");
+
+		if (b) {
+			System.out.println("Valid User");
+		} else {
+			System.out.println("Valid guest");
+		}
+
+		Supplier<String> str = () -> {
+			return new String("Hello");
+		};
+
+		Function<Integer, String> f = (num) -> {
+
+			if (num % 2 == 0) {
+				return "Even";
+			} else {
+				return "odd";
+			}
+
+		};
+		System.out.println(f.apply(503));
+
+	}
+
+}
+=====================================================================================================
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
